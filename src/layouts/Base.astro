@@ -1,6 +1,11 @@
 ---
 import "@/styles/global.css";
 import { ClientRouter } from "astro:transitions";
+import logo from "@/assets/logo.svg";
+// Preloaded so the above-the-fold header (brand logo + text) paints with the
+// page instead of popping in after the fonts/image load.
+import interWoff2 from "@fontsource-variable/inter/files/inter-latin-wght-normal.woff2?url";
+import monoWoff2 from "@fontsource-variable/jetbrains-mono/files/jetbrains-mono-latin-wght-normal.woff2?url";
 
 interface Props {
   title?: string;
@@ -26,6 +31,9 @@ const siteHome = new URL(base, Astro.site).href;
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="preload" href={logo.src} as="image" type="image/svg+xml" fetchpriority="high" />
+    <link rel="preload" href={interWoff2} as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href={monoWoff2} as="font" type="font/woff2" crossorigin />
     <link rel="icon" type="image/svg+xml" href={`${base}favicon.svg`} />
     <link rel="canonical" href={canonical} />
     <meta name="generator" content={Astro.generator} />

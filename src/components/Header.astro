@@ -1,5 +1,4 @@
 ---
-import { Image } from "astro:assets";
 import logo from "@/assets/logo.svg";
 import Icon from "@/components/Icon.astro";
 import ThemeToggle from "@/components/ThemeToggle.astro";
@@ -25,7 +24,7 @@ const nav = [
 <header class="site-header">
   <div class="container-page bar">
     <a href={base} class="brand" aria-label="angr home">
-      <Image src={logo} alt="" width={34} height={34} class="brand-logo" />
+      <img src={logo.src} alt="" width={34} height={34} class="brand-logo" loading="eager" fetchpriority="high" />
       <span class="brand-name">angr</span>
     </a>
 
