@@ -23,8 +23,8 @@ p{margin-top:34px;font-size:30px;color:#9aa0ab;max-width:880px;line-height:1.4}
 <div class="wrap">
  <div class="top"><img src="${logo}"><span class="name">angr<b>_</b></span></div>
  <div class="k">// OPEN-SOURCE BINARY ANALYSIS</div>
- <h1>Take binaries <span class="g">apart.</span></h1>
- <p>Symbolic execution, decompilation &amp; CFG recovery — a Python-native platform for every architecture.</p>
+ <h1><span class="g">Demystify binaries.</span></h1>
+ <p>The powerful, user-friendly Python platform for analyzing binaries. Decompilation, symbolic execution, and more in one scriptable toolkit.</p>
 </div></body></html>`;
 const b = await chromium.launch();
 const p = await (await b.newContext({viewport:{width:1200,height:630},deviceScaleFactor:1})).newPage();
