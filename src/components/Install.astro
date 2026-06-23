@@ -40,12 +40,13 @@ import Icon from "@/components/Icon.astro";
   }
   .inner {
     display: grid;
+    grid-template-columns: minmax(0, 1fr);
     gap: 2.5rem;
     align-items: center;
   }
   @media (min-width: 880px) {
     .inner {
-      grid-template-columns: 1fr 1fr;
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
     }
   }
   h2 {
@@ -84,6 +85,9 @@ import Icon from "@/components/Icon.astro";
     font-size: clamp(0.9rem, 2vw, 1.05rem);
     font-weight: 500;
     flex: 1;
+    /* Let the flex item shrink below the command's width so overflow-x scrolls
+       it, instead of forcing the card (and column) wide on tiny screens. */
+    min-width: 0;
     overflow-x: auto;
     white-space: nowrap;
   }
