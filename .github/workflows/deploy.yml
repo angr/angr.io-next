@@ -57,11 +57,19 @@ jobs:
           cache: npm
       - name: Install dependencies
         run: npm ci
+      # Derive the Pages origin + base path from the deploying repo, so the same
+      # workflow builds correct URLs for the production apex site and for a
+      # project-page test deploy under /<repo>/ (e.g. angr.github.io/angr.io-next).
+      - name: Setup Pages
+        id: pages
+        uses: actions/configure-pages@v5
       - name: Typecheck
         run: npm run check
       - name: Build site
         run: npm run build
         env:
+          SITE_URL: ${{ steps.pages.outputs.origin }}
+          BASE_PATH: ${{ steps.pages.outputs.base_path }}
           # Authenticates the build-time GitHub API call (star count), lifting
           # the unauthenticated 60/hr rate limit.
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
