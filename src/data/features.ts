@@ -16,7 +16,7 @@ export const features: Feature[] = [
   {
     icon: "braces",
     title: "Decompilation",
-    body: "Lift machine code to angr's AIL and recover readable pseudocode — as C or Rust.",
+    body: "Lift machine code to angr's AIL and recover readable pseudocode as C or Rust.",
   },
   {
     icon: "git-graph",
@@ -31,7 +31,7 @@ export const features: Feature[] = [
   {
     icon: "cpu",
     title: "Multi-Architecture",
-    body: "x86 / x86-64, ARM & AArch64, MIPS, PowerPC, and more — loaded from ELF, PE, Mach-O, and raw blobs alike.",
+    body: "x86 / x86-64, ARM & AArch64, MIPS, PowerPC, and more — any host can analyze any guest.",
   },
   {
     icon: "puzzle",
