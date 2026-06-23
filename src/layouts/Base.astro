@@ -70,6 +70,32 @@ const siteHome = new URL(base, Astro.site).href;
       })();
     </script>
 
+    <style is:inline>
+      /* Scroll-reveal hidden state, inlined so it applies at first paint even
+         before the external CSS loads — otherwise revealed content paints
+         visible, gets hidden when the CSS arrives, then animates in (a flash on
+         slow connections). Gated on .js so no-JS content just stays visible.
+         The IntersectionObserver that toggles .in-view is at the body end. */
+      .js .reveal {
+        opacity: 0;
+        transform: translateY(18px);
+        transition:
+          opacity 0.7s var(--ease-out-expo),
+          transform 0.7s var(--ease-out-expo);
+        transition-delay: var(--reveal-delay, 0ms);
+      }
+      .js .reveal.in-view {
+        opacity: 1;
+        transform: none;
+      }
+      @media (prefers-reduced-motion: reduce) {
+        .js .reveal {
+          opacity: 1;
+          transform: none;
+        }
+      }
+    </style>
+
     <ClientRouter />
 
     <!-- Structured data for SEO. -->

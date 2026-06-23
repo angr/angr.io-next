@@ -268,30 +268,12 @@
 }
 
 /* ---------------------------------------------------------------------------
-   Scroll-reveal animation (driven by IntersectionObserver toggling .in-view).
+   Scroll-reveal animation: the rules live in an inline <style> in <head>
+   (Base.astro), NOT here. They must apply at first paint — if they loaded with
+   this external stylesheet, content would paint visible, then get hidden once
+   the CSS arrives, then animate in (a flash on slow connections / in dev). The
+   IntersectionObserver that toggles `.in-view` is in Base.astro.
 --------------------------------------------------------------------------- */
-/* Gated on `.js` (set inline before paint): without JS the IntersectionObserver
-   never runs, so the initial hidden state must NOT apply — otherwise the whole
-   page stays invisible. Content is visible by default; the animation is layered
-   on only when JS is present to drive it. */
-.js .reveal {
-  opacity: 0;
-  transform: translateY(18px);
-  transition:
-    opacity 0.7s var(--ease-out-expo),
-    transform 0.7s var(--ease-out-expo);
-  transition-delay: var(--reveal-delay, 0ms);
-}
-.js .reveal.in-view {
-  opacity: 1;
-  transform: none;
-}
-@media (prefers-reduced-motion: reduce) {
-  .js .reveal {
-    opacity: 1;
-    transform: none;
-  }
-}
 
 
 /* ---------------------------------------------------------------------------
