@@ -1,0 +1,15 @@
+---
+import { Icon as Iconify } from "astro-icon/components";
+import { ICONS, type IconName } from "@/lib/icons";
+export type { IconName };
+
+interface Props {
+  name: IconName;
+  size?: number;
+  class?: string;
+}
+
+const { name, size = 24, class: className } = Astro.props;
+---
+
+<Iconify name={ICONS[name]} width={size} height={size} class={className} aria-hidden="true" />

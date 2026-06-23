@@ -1,0 +1,85 @@
+name: Deploy to GitHub Pages
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+  # Daily rebuild so the baked-in GitHub star count stays current between pushes.
+  schedule:
+    - cron: "0 6 * * *"
+
+# Allow the workflow to publish to Pages.
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# Only one concurrent deployment; don't cancel in-progress prod deploys.
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  # Re-run every demo against the latest angr (via uv) so a breaking API change
+  # fails CI — on PRs and daily, independently of build/deploy.
+  validate-demos:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Install uv
+        uses: astral-sh/setup-uv@v5
+      - name: Fetch fauxware test binary
+        run: |
+          mkdir -p "$RUNNER_TEMP/bin"
+          curl -fsSL -o "$RUNNER_TEMP/bin/fauxware" \
+            https://raw.githubusercontent.com/angr/binaries/master/tests/x86_64/fauxware
+          chmod +x "$RUNNER_TEMP/bin/fauxware"
+      - name: Regenerate demos against latest angr
+        run: |
+          uv run hero/build_notebooks.py --force
+          uv run hero/record_cli.py --force
+        env:
+          FAUXWARE_DIR: ${{ runner.temp }}/bin
+
+  # Build + typecheck on every push and PR, so broken builds are caught before
+  # they reach the default branch. Only pushes upload the deployable artifact.
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - name: Install dependencies
+        run: npm ci
+      - name: Typecheck
+        run: npm run check
+      - name: Build site
+        run: npm run build
+        env:
+          # Authenticates the build-time GitHub API call (star count), lifting
+          # the unauthenticated 60/hr rate limit.
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Upload Pages artifact
+        if: github.event_name != 'pull_request'
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: ./dist
+
+  # Publish — only on push to main (or manual dispatch), never on PRs.
+  deploy:
+    needs: build
+    if: github.event_name != 'pull_request'
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4

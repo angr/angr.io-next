@@ -1,0 +1,194 @@
+---
+import { Image } from "astro:assets";
+import logo from "@/assets/emotionlabs.svg";
+import Icon from "@/components/Icon.astro";
+
+const offerings = [
+  {
+    icon: "life-buoy" as const,
+    title: "Support",
+    body: "Expert help and maintenance from the people who know angr best.",
+  },
+  {
+    icon: "code" as const,
+    title: "Development",
+    body: "Custom analyses, features, and integrations built on top of angr.",
+  },
+  {
+    icon: "graduation-cap" as const,
+    title: "Training",
+    body: "Hands-on courses in binary analysis and reverse engineering.",
+  },
+];
+---
+
+<section id="support" class="section">
+  <div class="container-page">
+    <div class="stage reveal">
+      <div class="glow" aria-hidden="true"></div>
+      <div class="band card">
+      <div class="intro">
+        <Image src={logo} alt="Emotion Labs" width={56} height={56} class="logo" />
+        <p class="kicker">// professional support</p>
+        <h2>angr, backed by its core team</h2>
+        <p class="sub">
+          <a href="https://emotionlabs.io" target="_blank" rel="noopener">Emotion Labs</a> is
+          the company behind angr. The same maintainers who build it offer
+          support, development, and training to put binary analysis to work for
+          your team.
+        </p>
+        <a href="https://emotionlabs.io" target="_blank" rel="noopener" class="btn btn-el">
+          Visit Emotion Labs <Icon name="arrow-up-right" size={18} />
+        </a>
+      </div>
+
+      <ul class="offerings" role="list">
+        {
+          offerings.map((o) => (
+            <li>
+              <span class="ic">
+                <Icon name={o.icon} size={20} />
+              </span>
+              <div>
+                <h3>{o.title}</h3>
+                <p>{o.body}</p>
+              </div>
+            </li>
+          ))
+        }
+      </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .section {
+    padding-block: clamp(3rem, 6vw, 5rem);
+  }
+  .stage {
+    position: relative;
+  }
+  .band {
+    position: relative;
+    z-index: 1;
+    overflow: hidden;
+    display: grid;
+    gap: clamp(2rem, 5vw, 3.5rem);
+    padding: clamp(2rem, 5vw, 3.25rem);
+    align-items: center;
+  }
+  @media (min-width: 860px) {
+    .band {
+      grid-template-columns: 1.05fr 0.95fr;
+    }
+  }
+  /* A blurred blue shape sitting *behind* the opaque card. The blur spills
+     past the card edges onto the page background, so the card reads as
+     elevated — and since the card is opaque, the glow never touches the text.
+     Alpha is theme-aware: the colored halo needs more punch on the light bg. */
+  .stage {
+    --el-glow: rgba(0, 100, 210, 0.22);
+  }
+  :global([data-theme="light"]) .stage {
+    --el-glow: rgba(0, 90, 200, 0.28);
+  }
+  .glow {
+    position: absolute;
+    inset: 2.5rem 3rem;
+    border-radius: 2rem;
+    background: var(--el-glow);
+    filter: blur(72px);
+    pointer-events: none;
+    z-index: 0;
+    /* Bloom in on its own, just after the card lands, for a bit of life. */
+    opacity: 0;
+    transform: scale(0.86);
+    transition:
+      opacity 1.2s ease,
+      transform 1.6s var(--ease-out-expo);
+    transition-delay: 0.25s;
+  }
+  .stage.in-view .glow {
+    opacity: 1;
+    transform: scale(1);
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .glow {
+      opacity: 1;
+      transform: none;
+      transition: none;
+    }
+  }
+
+  .logo {
+    width: 56px;
+    height: 56px;
+    margin-bottom: 1.1rem;
+    filter: drop-shadow(0 4px 14px rgba(0, 100, 210, 0.35));
+  }
+  .intro h2 {
+    font-size: clamp(1.7rem, 3.6vw, 2.5rem);
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    line-height: 1.1;
+    margin: 0.65rem 0 0.9rem;
+  }
+  .intro .sub {
+    font-size: 1.05rem;
+    line-height: 1.6;
+    color: var(--fg-muted);
+    max-width: 34rem;
+    margin: 0 0 1.75rem;
+  }
+  .intro .sub a {
+    color: var(--fg);
+    font-weight: 600;
+    text-decoration: underline;
+    text-decoration-color: color-mix(in srgb, #0064d2 55%, transparent);
+    text-underline-offset: 3px;
+  }
+
+  /* Emotion Labs blue CTA. */
+  .btn-el {
+    background: #0064d2;
+    color: #fff;
+    box-shadow: 0 6px 20px -8px rgba(0, 100, 210, 0.6);
+  }
+  .btn-el:hover {
+    box-shadow: 0 10px 28px -8px rgba(0, 100, 210, 0.7);
+  }
+
+  .offerings {
+    display: flex;
+    flex-direction: column;
+    gap: 1.1rem;
+  }
+  .offerings li {
+    display: flex;
+    gap: 0.9rem;
+    align-items: flex-start;
+  }
+  .ic {
+    display: inline-grid;
+    place-items: center;
+    width: 2.6rem;
+    height: 2.6rem;
+    flex-shrink: 0;
+    border-radius: 0.7rem;
+    color: #2a86ee;
+    background: color-mix(in srgb, #0064d2 12%, transparent);
+    border: 1px solid color-mix(in srgb, #0064d2 24%, transparent);
+  }
+  .offerings h3 {
+    font-size: 1.02rem;
+    font-weight: 700;
+    margin: 0.15rem 0 0.25rem;
+  }
+  .offerings p {
+    margin: 0;
+    font-size: 0.92rem;
+    line-height: 1.5;
+    color: var(--fg-muted);
+  }
+</style>

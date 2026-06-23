@@ -1,0 +1,243 @@
+---
+import { Image } from "astro:assets";
+import logo from "@/assets/logo.svg";
+import Icon from "@/components/Icon.astro";
+import ThemeToggle from "@/components/ThemeToggle.astro";
+import { getStarCount, formatStars } from "@/lib/github";
+
+// Fetched at build time and baked in — no runtime request. null on failure.
+const stars = await getStarCount("angr/angr");
+const starLabel = stars != null ? formatStars(stars) : null;
+
+const nav = [
+  { label: "Features", href: "/#features" },
+  { label: "Install", href: "/#install" },
+  { label: "Applications", href: "/#applications" },
+  { label: "Community", href: "/#community" },
+  { label: "Support", href: "/#support" },
+  { label: "Docs", href: "https://docs.angr.io", external: true },
+];
+---
+
+<header class="site-header">
+  <div class="container-page bar">
+    <a href="/" class="brand" aria-label="angr home">
+      <Image src={logo} alt="" width={34} height={34} class="brand-logo" />
+      <span class="brand-name">angr</span>
+    </a>
+
+    <nav class="nav-desktop" aria-label="Primary">
+      {
+        nav.map((item) => (
+          <a href={item.href} target={item.external ? "_blank" : undefined} rel={item.external ? "noopener" : undefined}>
+            {item.label}
+          </a>
+        ))
+      }
+    </nav>
+
+    <div class="actions">
+      <a
+        href="https://github.com/angr/angr"
+        target="_blank"
+        rel="noopener"
+        class="gh-link"
+        aria-label={starLabel
+          ? `Star angr on GitHub — ${stars!.toLocaleString()} stars`
+          : "angr on GitHub"}
+      >
+        <Icon name="github" size={18} />
+        <span>Star</span>
+        {starLabel && <span class="gh-count">{starLabel}</span>}
+      </a>
+      <ThemeToggle />
+      <button id="menu-btn" class="menu-btn" aria-label="Open menu" aria-expanded="false" aria-controls="mobile-nav">
+        <Icon name="menu" size={22} />
+      </button>
+    </div>
+  </div>
+
+  <nav id="mobile-nav" class="nav-mobile" aria-label="Mobile" hidden>
+    {
+      nav.map((item) => (
+        <a href={item.href} target={item.external ? "_blank" : undefined} rel={item.external ? "noopener" : undefined}>
+          {item.label}
+        </a>
+      ))
+    }
+    <a href="https://github.com/angr/angr" target="_blank" rel="noopener">GitHub ↗</a>
+  </nav>
+</header>
+
+<style>
+  .site-header {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    background: color-mix(in srgb, var(--bg) 78%, transparent);
+    backdrop-filter: blur(14px) saturate(1.4);
+    -webkit-backdrop-filter: blur(14px) saturate(1.4);
+    border-bottom: 1px solid var(--line);
+  }
+  .bar {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    height: 4rem;
+  }
+  .brand {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+    font-family: var(--font-mono);
+    font-weight: 700;
+    font-size: 1.2rem;
+    letter-spacing: -0.02em;
+  }
+  .brand-logo {
+    width: 34px;
+    height: 34px;
+    filter: drop-shadow(0 2px 6px var(--glow));
+    transition: transform 0.4s var(--ease-out-expo);
+  }
+  .brand:hover .brand-logo {
+    transform: rotate(-8deg) scale(1.06);
+  }
+  .brand-name::after {
+    content: "_";
+    color: var(--primary);
+  }
+
+  .nav-desktop {
+    display: none;
+    align-items: center;
+    gap: 1.75rem;
+    margin-inline-start: auto;
+    font-size: 0.92rem;
+    font-weight: 500;
+  }
+  .nav-desktop a {
+    color: var(--fg-muted);
+    position: relative;
+    transition: color 0.18s ease;
+  }
+  .nav-desktop a::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: -0.4rem;
+    height: 2px;
+    width: 0;
+    background: var(--primary);
+    transition: width 0.25s var(--ease-out-expo);
+  }
+  .nav-desktop a:hover {
+    color: var(--fg);
+  }
+  .nav-desktop a:hover::after {
+    width: 100%;
+  }
+
+  .actions {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    margin-inline-start: auto;
+  }
+  .gh-link {
+    display: none;
+    align-items: center;
+    gap: 0.45rem;
+    font-size: 0.88rem;
+    font-weight: 600;
+    padding: 0.5rem 0.85rem;
+    border-radius: 0.6rem;
+    border: 1px solid var(--line);
+    background: var(--surface);
+    transition:
+      border-color 0.18s ease,
+      color 0.18s ease,
+      transform 0.18s ease;
+  }
+  .gh-link:hover {
+    border-color: var(--primary);
+    color: var(--primary);
+  }
+  /* Build-time star count, set off by a thin divider. */
+  .gh-count {
+    padding-inline-start: 0.5rem;
+    margin-inline-start: 0.1rem;
+    border-inline-start: 1px solid var(--line);
+    font-variant-numeric: tabular-nums;
+    color: var(--fg-muted);
+  }
+  .gh-link:hover .gh-count {
+    color: var(--primary);
+  }
+  .menu-btn {
+    display: inline-grid;
+    place-items: center;
+    width: 2.4rem;
+    height: 2.4rem;
+    border-radius: 0.6rem;
+    border: 1px solid var(--line);
+    background: var(--surface);
+    color: var(--fg);
+    cursor: pointer;
+  }
+
+  .nav-mobile {
+    display: flex;
+    flex-direction: column;
+    padding: 0.5rem 1.5rem 1.25rem;
+    gap: 0.25rem;
+    border-bottom: 1px solid var(--line);
+    background: var(--bg);
+  }
+  .nav-mobile a {
+    padding: 0.75rem 0.5rem;
+    color: var(--fg-muted);
+    font-weight: 500;
+    border-bottom: 1px solid var(--line);
+  }
+  .nav-mobile a:last-child {
+    border-bottom: none;
+  }
+
+  @media (min-width: 900px) {
+    .actions {
+      margin-inline-start: 0;
+    }
+    .nav-desktop {
+      display: flex;
+    }
+    .gh-link {
+      display: inline-flex;
+    }
+    .menu-btn {
+      display: none;
+    }
+    .nav-mobile {
+      display: none !important;
+    }
+  }
+</style>
+
+<script>
+  const bind = () => {
+    const btn = document.getElementById("menu-btn");
+    const menu = document.getElementById("mobile-nav");
+    if (!btn || !menu) return;
+    const toggle = (open?: boolean) => {
+      const next = open ?? menu.hasAttribute("hidden");
+      menu.toggleAttribute("hidden", !next);
+      btn.setAttribute("aria-expanded", String(next));
+    };
+    btn.addEventListener("click", () => toggle());
+    menu.querySelectorAll("a").forEach((a) =>
+      a.addEventListener("click", () => toggle(false))
+    );
+  };
+  bind();
+  document.addEventListener("astro:after-swap", bind);
+</script>

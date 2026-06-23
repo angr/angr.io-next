@@ -1,0 +1,104 @@
+---
+import { ecosystem } from "@/data/ecosystem";
+import Icon from "@/components/Icon.astro";
+---
+
+<section id="ecosystem" class="section">
+  <div class="container-page">
+    <header class="section-head reveal">
+      <p class="kicker">// modular by design</p>
+      <h2>A platform, not a black box</h2>
+      <p class="sub">
+        angr is built from focused subprojects — each one usable on its own.
+        Take the whole stack, or just the piece you need.
+      </p>
+    </header>
+
+    <ul class="grid" role="list">
+      {
+        ecosystem.map((p, i) => (
+          <li class="reveal" style={`--reveal-delay: ${(i % 4) * 60}ms`}>
+            <a href={p.href} target="_blank" rel="noopener" class="card item">
+              <div class="top">
+                <span class="name">{p.name}</span>
+                <Icon name="arrow-up-right" size={16} />
+              </div>
+              <p>{p.tagline}</p>
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+  </div>
+</section>
+
+<style>
+  .section {
+    padding-block: clamp(3.5rem, 7vw, 6rem);
+  }
+  .section-head {
+    max-width: 42rem;
+    margin-bottom: 2.5rem;
+  }
+  .section-head h2 {
+    font-size: clamp(1.9rem, 4vw, 2.85rem);
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    margin: 0.75rem 0 0.9rem;
+  }
+  .section-head .sub {
+    font-size: 1.08rem;
+    line-height: 1.6;
+    color: var(--fg-muted);
+  }
+
+  .grid {
+    display: grid;
+    gap: 1rem;
+    grid-template-columns: 1fr;
+  }
+  @media (min-width: 560px) {
+    .grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+  @media (min-width: 920px) {
+    .grid {
+      grid-template-columns: repeat(4, 1fr);
+    }
+  }
+
+  .item {
+    display: block;
+    height: 100%;
+    padding: 1.3rem 1.35rem;
+  }
+  .item:hover {
+    border-color: var(--primary);
+  }
+  .item:hover :global(svg) {
+    color: var(--primary);
+  }
+  .top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 0.55rem;
+  }
+  .name {
+    font-family: var(--font-mono);
+    font-weight: 700;
+    font-size: 1.05rem;
+    letter-spacing: -0.01em;
+  }
+  .top :global(svg) {
+    color: var(--fg-faint);
+    transition: color 0.18s ease;
+  }
+  .item p {
+    margin: 0;
+    font-size: 0.9rem;
+    line-height: 1.5;
+    color: var(--fg-muted);
+  }
+</style>

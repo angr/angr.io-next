@@ -1,0 +1,383 @@
+@import "tailwindcss";
+
+/* Self-hosted variable fonts — nothing fetched from a third party at runtime. */
+@import "@fontsource-variable/inter";
+@import "@fontsource-variable/jetbrains-mono";
+
+/* Manual theme switch: `[data-theme="dark"]` wins over OS preference.
+   The `dark:` variant matches our explicit attribute. */
+@custom-variant dark (&:where([data-theme="dark"], [data-theme="dark"] *));
+
+/* ---------------------------------------------------------------------------
+   Design tokens. Raw values live as CSS custom properties so they can flip at
+   runtime with the theme; `@theme inline` maps them onto Tailwind utilities
+   (bg-bg, text-fg, text-primary, border-line, …) by reference, not by value.
+--------------------------------------------------------------------------- */
+:root {
+  /* Brand — drawn straight from the angr logo. */
+  --crimson: #ef2929;
+  --crimson-deep: #cc0000;
+  --amber: #fcaf3e;
+
+  /* Light theme (default). Warm paper, ink text. */
+  --bg: #faf9f7;
+  --bg-grid: rgba(16, 18, 27, 0.04);
+  --surface: #ffffff;
+  --surface-2: #f3f1ee;
+  --code-bg: #f6f8fa;
+  --line: rgba(16, 18, 27, 0.1);
+  --line-strong: rgba(16, 18, 27, 0.16);
+  --fg: #15171c;
+  --fg-muted: #565b66;
+  --fg-faint: #888d97;
+  --primary: #d11f17;
+  --primary-fg: #ffffff;
+  --accent: #b45309;
+  --ring: rgba(209, 31, 23, 0.45);
+  --glow: rgba(209, 31, 23, 0.12);
+  --shadow: 0 1px 2px rgba(16, 18, 27, 0.06), 0 8px 24px -12px rgba(16, 18, 27, 0.18);
+  color-scheme: light;
+}
+
+[data-theme="dark"] {
+  /* Dark theme. Near-black terminal, ember accents. */
+  --bg: #0a0b0e;
+  --bg-grid: rgba(255, 255, 255, 0.035);
+  --surface: #121419;
+  --surface-2: #171a21;
+  --code-bg: #0d1016;
+  --line: rgba(255, 255, 255, 0.09);
+  --line-strong: rgba(255, 255, 255, 0.16);
+  --fg: #e7e9ee;
+  --fg-muted: #9aa0ab;
+  --fg-faint: #6b7280;
+  --primary: #ff4338;
+  --primary-fg: #0a0b0e;
+  --accent: #fcaf3e;
+  --ring: rgba(255, 67, 56, 0.5);
+  --glow: rgba(255, 67, 56, 0.16);
+  --shadow: 0 1px 2px rgba(0, 0, 0, 0.5), 0 16px 40px -16px rgba(0, 0, 0, 0.7);
+  color-scheme: dark;
+}
+
+@theme inline {
+  --color-bg: var(--bg);
+  --color-surface: var(--surface);
+  --color-surface-2: var(--surface-2);
+  --color-line: var(--line);
+  --color-line-strong: var(--line-strong);
+  --color-fg: var(--fg);
+  --color-fg-muted: var(--fg-muted);
+  --color-fg-faint: var(--fg-faint);
+  --color-primary: var(--primary);
+  --color-primary-fg: var(--primary-fg);
+  --color-accent: var(--accent);
+  --color-crimson: var(--crimson);
+  --color-amber: var(--amber);
+
+  --font-sans: "Inter Variable", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "JetBrains Mono Variable", ui-monospace, "SF Mono", "Fira Code",
+    monospace;
+
+  --radius-xl: 1rem;
+  --radius-2xl: 1.25rem;
+
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* ---------------------------------------------------------------------------
+   Base element styles.
+--------------------------------------------------------------------------- */
+@layer base {
+  * {
+    border-color: var(--line);
+  }
+
+  html {
+    scroll-behavior: smooth;
+    -webkit-text-size-adjust: 100%;
+    scroll-padding-top: 5rem;
+  }
+
+  body {
+    background-color: var(--bg);
+    color: var(--fg);
+    font-family: var(--font-sans);
+    font-synthesis-weight: none;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    /* Subtle blueprint grid — the "hacker" substrate. */
+    background-image:
+      linear-gradient(to right, var(--bg-grid) 1px, transparent 1px),
+      linear-gradient(to bottom, var(--bg-grid) 1px, transparent 1px);
+    background-size: 56px 56px;
+    background-position: center top;
+  }
+
+  ::selection {
+    background-color: var(--primary);
+    color: var(--primary-fg);
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--primary);
+    outline-offset: 2px;
+    border-radius: 2px;
+  }
+
+  a {
+    color: inherit;
+    text-decoration: none;
+  }
+
+  /* Respect reduced-motion: kill transforms/animations site-wide. */
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.001ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.001ms !important;
+      scroll-behavior: auto !important;
+    }
+  }
+}
+
+/* ---------------------------------------------------------------------------
+   Utilities & components.
+--------------------------------------------------------------------------- */
+@layer components {
+  .container-page {
+    width: 100%;
+    max-width: 76rem;
+    margin-inline: auto;
+    padding-inline: 1.5rem;
+  }
+
+  /* Monospace eyebrow / kicker label, terminal-styled. */
+  .kicker {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-family: var(--font-mono);
+    font-size: 0.78rem;
+    font-weight: 500;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--primary);
+    margin: 0;
+  }
+
+  /* Gradient text used for hero emphasis. */
+  .text-gradient {
+    background: linear-gradient(
+      120deg,
+      var(--fg) 0%,
+      var(--fg) 40%,
+      var(--primary) 75%,
+      var(--amber) 100%
+    );
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+
+  /* Primary CTA button. */
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-weight: 600;
+    font-size: 0.95rem;
+    line-height: 1;
+    padding: 0.8rem 1.25rem;
+    border-radius: 0.7rem;
+    transition:
+      transform 0.18s var(--ease-out-expo),
+      background-color 0.18s ease,
+      border-color 0.18s ease,
+      box-shadow 0.18s ease;
+    will-change: transform;
+  }
+  .btn:active {
+    transform: translateY(1px);
+  }
+  .btn-primary {
+    /* Subtle crimson → amber gradient, echoing the logo and the hero text. */
+    background-color: var(--primary);
+    background-image: linear-gradient(
+      120deg,
+      var(--primary) 35%,
+      color-mix(in srgb, var(--amber) 55%, var(--primary)) 100%
+    );
+    color: var(--primary-fg);
+    box-shadow: 0 6px 20px -8px var(--ring);
+  }
+  .btn-primary:hover {
+    box-shadow: 0 10px 28px -8px var(--ring);
+  }
+  .btn-ghost {
+    background: transparent;
+    color: var(--fg);
+    border: 1px solid var(--line-strong);
+  }
+  .btn-ghost:hover {
+    border-color: var(--primary);
+    color: var(--primary);
+  }
+
+  /* Bordered surface card with hover lift + edge glow. */
+  .card {
+    position: relative;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-xl);
+    box-shadow: var(--shadow);
+    transition:
+      transform 0.25s var(--ease-out-expo),
+      border-color 0.25s ease,
+      box-shadow 0.25s ease;
+  }
+
+  /* Hairline corner-tick decoration for the "instrument panel" feel. */
+  .ticked::before,
+  .ticked::after {
+    content: "";
+    position: absolute;
+    width: 10px;
+    height: 10px;
+    border-color: var(--primary);
+    opacity: 0.6;
+    pointer-events: none;
+  }
+  .ticked::before {
+    top: -1px;
+    left: -1px;
+    border-top: 1.5px solid;
+    border-left: 1.5px solid;
+    border-top-left-radius: var(--radius-xl);
+  }
+  .ticked::after {
+    bottom: -1px;
+    right: -1px;
+    border-bottom: 1.5px solid;
+    border-right: 1.5px solid;
+    border-bottom-right-radius: var(--radius-xl);
+  }
+}
+
+/* ---------------------------------------------------------------------------
+   Scroll-reveal animation (driven by IntersectionObserver toggling .in-view).
+--------------------------------------------------------------------------- */
+/* Gated on `.js` (set inline before paint): without JS the IntersectionObserver
+   never runs, so the initial hidden state must NOT apply — otherwise the whole
+   page stays invisible. Content is visible by default; the animation is layered
+   on only when JS is present to drive it. */
+.js .reveal {
+  opacity: 0;
+  transform: translateY(18px);
+  transition:
+    opacity 0.7s var(--ease-out-expo),
+    transform 0.7s var(--ease-out-expo);
+  transition-delay: var(--reveal-delay, 0ms);
+}
+.js .reveal.in-view {
+  opacity: 1;
+  transform: none;
+}
+@media (prefers-reduced-motion: reduce) {
+  .js .reveal {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+
+/* ---------------------------------------------------------------------------
+   Dual-theme Shiki code blocks. Astro emits the light color inline and the
+   dark color as a `--shiki-dark` custom property. Inline styles outrank plain
+   rules, so the dark override must use !important to win.
+--------------------------------------------------------------------------- */
+.astro-code span {
+  background-color: transparent !important;
+}
+[data-theme="dark"] .astro-code,
+[data-theme="dark"] .astro-code span {
+  color: var(--shiki-dark) !important;
+  font-style: var(--shiki-dark-font-style) !important;
+  font-weight: var(--shiki-dark-font-weight) !important;
+  text-decoration: var(--shiki-dark-text-decoration) !important;
+}
+
+/* ---------------------------------------------------------------------------
+   asciinema-player — themed to blend into the hero's terminal card.
+   The demo uses 256-color SGR codes (fixed palette); these vars mainly drive
+   the default foreground and a transparent background so our card shows through.
+--------------------------------------------------------------------------- */
+.ap-player.asciinema-player-theme-angr {
+  --term-color-foreground: #d7d9df;
+  --term-color-background: transparent;
+  --term-color-0: #11141a;
+  --term-color-1: #ff5f57;
+  --term-color-2: #2bd07a;
+  --term-color-3: #ffb454;
+  --term-color-4: #4aa3ff;
+  --term-color-5: #c678dd;
+  --term-color-6: #56b6c2;
+  --term-color-7: #d7d9df;
+  --term-color-8: #5b6270;
+  --term-color-9: #ff7a70;
+  --term-color-10: #5ef2a0;
+  --term-color-11: #ffd479;
+  --term-color-12: #74b9ff;
+  --term-color-13: #d7a3ff;
+  --term-color-14: #7fe7f0;
+  --term-color-15: #ffffff;
+}
+[data-theme="light"] .ap-player.asciinema-player-theme-angr {
+  --term-color-foreground: #33373f;
+}
+/* Strip the player's own chrome so it sits flush inside our window frame.
+   asciinema's terminal (`.ap-term`) pads itself with a thick solid-black
+   border — recolor it to transparent so our card surface shows through. */
+.ap-player,
+.ap-term {
+  background: transparent !important;
+}
+.ap-term {
+  border-color: transparent !important;
+}
+
+/* ---------------------------------------------------------------------------
+   Terminal ANSI 16-color palette (GitHub-style), theme-aware. Used to render
+   the real color that angr's pp() emits in the hero notebook's output.
+--------------------------------------------------------------------------- */
+:root {
+  --a0: #24292f; --a1: #cf222e; --a2: #1a7f37; --a3: #9a6700;
+  --a4: #1f6feb; --a5: #8250df; --a6: #0e7490; --a7: #57606a;
+  --a8: #6e7781; --a9: #d1242f; --a10: #1a7f37; --a11: #7d5e00;
+  --a12: #218bff; --a13: #a475f9; --a14: #1b7c83; --a15: #24292f;
+}
+[data-theme="dark"] {
+  --a0: #484f58; --a1: #ff7b72; --a2: #3fb950; --a3: #d29922;
+  --a4: #58a6ff; --a5: #bc8cff; --a6: #56d4dd; --a7: #b1bac4;
+  --a8: #6e7681; --a9: #ffa198; --a10: #56d364; --a11: #e3b341;
+  --a12: #79c0ff; --a13: #d2a8ff; --a14: #76e3ea; --a15: #f0f6fc;
+}
+.a0 { color: var(--a0); }
+.a1 { color: var(--a1); }
+.a2 { color: var(--a2); }
+.a3 { color: var(--a3); }
+.a4 { color: var(--a4); }
+.a5 { color: var(--a5); }
+.a6 { color: var(--a6); }
+.a7 { color: var(--a7); }
+.a8 { color: var(--a8); }
+.a9 { color: var(--a9); }
+.a10 { color: var(--a10); }
+.a11 { color: var(--a11); }
+.a12 { color: var(--a12); }
+.a13 { color: var(--a13); }
+.a14 { color: var(--a14); }
+.a15 { color: var(--a15); }

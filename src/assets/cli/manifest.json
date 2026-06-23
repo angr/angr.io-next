@@ -1,0 +1,14 @@
+[
+  {
+    "id": "decompile",
+    "title": "Decompile"
+  },
+  {
+    "id": "disassemble",
+    "title": "Disassemble"
+  },
+  {
+    "id": "repl",
+    "title": "Python REPL"
+  }
+]

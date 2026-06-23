@@ -1,0 +1,56 @@
+[
+  {
+    "id": "decompile",
+    "title": "Decompilation",
+    "cells": [
+      {
+        "n": 1,
+        "code": "# Decompile main() to readable C\nimport angr\nproj = angr.Project(\"fauxware\")\ncfg = proj.analyses.CFGFast(normalize=True)",
+        "streamHtml": "",
+        "out": null
+      },
+      {
+        "n": 2,
+        "code": "dec = proj.analyses.Decompiler(\"main\")\nprint(dec.codegen.text)",
+        "streamHtml": "int main(unsigned int a0, unsigned long a1)\n{\n    char v0;  // [bp-0x2c], Other Possible Types: unsigned int\n    char v1;  // [bp-0x28]\n    char choice;  // [bp-0x20]\n    char v3;  // [bp-0x18]\n    char flag;  // [bp-0x10]\n\n    flag = 0;\n    choice = 0;\n    puts(&quot;Username: &quot;);\n    read(0, &amp;v3, 8);\n    read(0, &amp;v0, 1);\n    puts(&quot;Password: &quot;);\n    read(0, &amp;v1, 8);\n    read(0, &amp;v0, 1);\n    v0 = authenticate(&amp;v3, &amp;v1, &amp;v1);\n    if (!v0)\n        rejected(); /* do not return */\n    return accepted();\n}",
+        "out": null
+      }
+    ]
+  },
+  {
+    "id": "disasm",
+    "title": "Disassembly",
+    "cells": [
+      {
+        "n": 1,
+        "code": "# Disassemble a function with its CFG edges\nimport angr\nproj = angr.Project(\"fauxware\")\nproj.analyses.CFGFast(normalize=True)\nproj.kb.functions[\"authenticate\"].pp()",
+        "streamHtml": "              <span class=\"a11\">authenticate:</span>\n      <span class=\"a8\">400664</span>  push    rbp\n      <span class=\"a8\">400665</span>  mov     rbp, rsp\n      <span class=\"a8\">400668</span>  sub     rsp, <span class=\"a6\">0x20</span>\n      <span class=\"a8\">40066c</span>  mov     <span class=\"a3\">qword ptr [rbp-0x18]</span>, rdi\n      <span class=\"a8\">400670</span>  mov     <span class=\"a3\">qword ptr [rbp-0x20]</span>, rsi\n      <span class=\"a8\">400674</span>  mov     <span class=\"a3\">byte ptr [rbp-0x8]</span>, <span class=\"a6\">0x0</span>\n      <span class=\"a8\">400678</span>  mov     rdx, <span class=\"a3\">qword ptr [sneaky]</span>\n      <span class=\"a8\">40067f</span>  mov     rax, <span class=\"a3\">qword ptr [rbp-0x20]</span>\n      <span class=\"a8\">400683</span>  mov     rsi, rdx\n      <span class=\"a8\">400686</span>  mov     rdi, rax\n      <span class=\"a8\">400689</span>  call    <span class=\"a6\">strcmp</span>\n      \n      <span class=\"a8\">40068e</span>  test    eax, eax\n    <span class=\"a3\">\u256d\u2574</span><span class=\"a8\">400690</span>  jne     <span class=\"a6\">0x400699</span>\n    <span class=\"a3\">\u2502 </span>\n    <span class=\"a3\">\u2502 </span><span class=\"a8\">400692</span>  mov     eax, <span class=\"a6\">0x1</span>\n<span class=\"a3\">\u256d\u2500\u2500\u2574</span><span class=\"a3\">\u2502 </span><span class=\"a8\">400697</span>  jmp     <span class=\"a6\">0x4006eb</span>\n<span class=\"a3\">\u2502   </span><span class=\"a3\">\u2502 </span>\n<span class=\"a3\">\u2502   </span><span class=\"a3\">\u2570\u25b8</span><span class=\"a8\">400699</span>  mov     rax, <span class=\"a3\">qword ptr [rbp-0x18]</span>\n<span class=\"a3\">\u2502     </span><span class=\"a8\">40069d</span>  mov     esi, <span class=\"a6\">0x0</span>\n<span class=\"a3\">\u2502     </span><span class=\"a8\">4006a2</span>  mov     rdi, rax\n<span class=\"a3\">\u2502     </span><span class=\"a8\">4006a5</span>  mov     eax, <span class=\"a6\">0x0</span>\n<span class=\"a3\">\u2502     </span><span class=\"a8\">4006aa</span>  call    <span class=\"a6\">open</span>\n<span class=\"a3\">\u2502     </span>\n<span class=\"a3\">\u2502     </span><span class=\"a8\">4006af</span>  mov     <span class=\"a3\">dword ptr [rbp-0x4]</span>, eax\n<span class=\"a3\">\u2502     </span><span class=\"a8\">4006b2</span>  lea     rcx, <span class=\"a3\">[rbp-0x10]</span>\n<span class=\"a3\">\u2502     </span><span class=\"a8\">4006b6</span>  mov     eax, <span class=\"a3\">dword ptr [rbp-0x4]</span>\n<span class=\"a3\">\u2502     </span><span class=\"a8\">4006b9</span>  mov     edx, <span class=\"a6\">0x8</span>\n<span class=\"a3\">\u2502     </span><span class=\"a8\">4006be</span>  mov     rsi, rcx\n<span class=\"a3\">\u2502     </span><span class=\"a8\">4006c1</span>  mov     edi, eax\n<span class=\"a3\">\u2502     </span><span class=\"a8\">4006c3</span>  call    <span class=\"a6\">read</span>\n<span class=\"a3\">\u2502     </span>\n<span class=\"a3\">\u2502     </span><span class=\"a8\">4006c8</span>  lea     rdx, <span class=\"a3\">[rbp-0x10]</span>\n<span class=\"a3\">\u2502     </span><span class=\"a8\">4006cc</span>  mov     rax, <span class=\"a3\">qword ptr [rbp-0x20]</span>\n<span class=\"a3\">\u2502     </span><span class=\"a8\">4006d0</span>  mov     rsi, rdx\n<span class=\"a3\">\u2502     </span><span class=\"a8\">4006d3</span>  mov     rdi, rax\n<span class=\"a3\">\u2502     </span><span class=\"a8\">4006d6</span>  call    <span class=\"a6\">strcmp</span>\n<span class=\"a3\">\u2502     </span>\n<span class=\"a3\">\u2502     </span><span class=\"a8\">4006db</span>  test    eax, eax\n<span class=\"a3\">\u2502 </span><span class=\"a3\">\u256d\u2500\u2500\u2574</span><span class=\"a8\">4006dd</span>  jne     <span class=\"a6\">0x4006e6</span>\n<span class=\"a3\">\u2502 </span><span class=\"a3\">\u2502   </span>\n<span class=\"a3\">\u2502 </span><span class=\"a3\">\u2502   </span><span class=\"a8\">4006df</span>  mov     eax, <span class=\"a6\">0x1</span>\n<span class=\"a3\">\u2502 </span><span class=\"a3\">\u2502 </span><span class=\"a3\">\u256d\u2574</span><span class=\"a8\">4006e4</span>  jmp     <span class=\"a6\">0x4006eb</span>\n<span class=\"a3\">\u2502 </span><span class=\"a3\">\u2502 </span><span class=\"a3\">\u2502 </span>\n<span class=\"a3\">\u2502 </span><span class=\"a3\">\u2570\u25b8</span><span class=\"a3\">\u2502 </span><span class=\"a8\">4006e6</span>  mov     eax, <span class=\"a6\">0x0</span>\n<span class=\"a3\">\u2502   </span><span class=\"a3\">\u2502 </span>\n<span class=\"a3\">\u2570\u2500\u2500\u25b8</span><span class=\"a3\">\u2570\u25b8</span><span class=\"a8\">4006eb</span>  leave   \n      <span class=\"a8\">4006ec</span>  ret     ",
+        "out": null
+      }
+    ]
+  },
+  {
+    "id": "symexec",
+    "title": "Symbolic Execution",
+    "cells": [
+      {
+        "n": 1,
+        "code": "# Find the input that gets accepted\nimport angr\nproj = angr.Project(\"fauxware\")\nsimgr = proj.factory.simgr()",
+        "streamHtml": "",
+        "out": null
+      },
+      {
+        "n": 2,
+        "code": "accepted = proj.loader.find_symbol(\"accepted\").rebased_addr\nsimgr.explore(find=accepted)",
+        "streamHtml": "",
+        "out": "<SimulationManager with 1 active, 1 found>"
+      },
+      {
+        "n": 3,
+        "code": "simgr.found[0].posix.dumps(0)",
+        "streamHtml": "",
+        "out": "b'\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00SOSNEAKY\\x00'"
+      }
+    ]
+  }
+]

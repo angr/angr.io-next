@@ -1,0 +1,132 @@
+---
+import "@/styles/global.css";
+import { ClientRouter } from "astro:transitions";
+
+interface Props {
+  title?: string;
+  description?: string;
+  /** Path to an OG image relative to the site root. */
+  image?: string;
+}
+
+const {
+  title = "angr — the binary analysis platform",
+  description = "angr is an open-source, Python-powered binary analysis platform. Symbolic execution, decompilation, CFG recovery, and more — for every architecture.",
+  image = "/og.png",
+} = Astro.props;
+
+const canonical = new URL(Astro.url.pathname, Astro.site);
+const ogImage = new URL(image, Astro.site);
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="canonical" href={canonical} />
+    <meta name="generator" content={Astro.generator} />
+    <meta name="color-scheme" content="dark light" />
+
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <meta name="theme-color" content="#0a0b0e" media="(prefers-color-scheme: dark)" />
+    <meta name="theme-color" content="#faf9f7" media="(prefers-color-scheme: light)" />
+
+    <!-- Open Graph / Twitter -->
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={ogImage} />
+    <meta property="og:site_name" content="angr" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogImage} />
+
+    <!-- Set the theme + mark JS-enabled before first paint (no flash). The
+         `js` class gates the scroll-reveal styles so content is visible by
+         default and only hidden-then-animated when JS can drive it. -->
+    <script is:inline>
+      (() => {
+        document.documentElement.classList.add("js");
+        const stored = localStorage.getItem("theme");
+        const theme =
+          stored ??
+          (matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
+        document.documentElement.dataset.theme = theme;
+      })();
+    </script>
+
+    <ClientRouter />
+
+    <!-- Structured data for SEO. -->
+    <script
+      type="application/ld+json"
+      is:inline
+      set:html={JSON.stringify({
+        "@context": "https://schema.org",
+        "@type": "SoftwareApplication",
+        name: "angr",
+        applicationCategory: "DeveloperApplication",
+        operatingSystem: "Windows, macOS, Linux",
+        description,
+        url: "https://angr.io",
+        license: "https://opensource.org/license/bsd-2-clause",
+        offers: { "@type": "Offer", price: "0", priceCurrency: "USD" },
+      })}
+    />
+  </head>
+  <body>
+    <a href="#main" class="skip-link">Skip to content</a>
+    <slot />
+
+    <style>
+      .skip-link {
+        position: fixed;
+        top: 0.75rem;
+        left: 0.75rem;
+        z-index: 100;
+        padding: 0.6rem 1rem;
+        border-radius: 0.5rem;
+        background: var(--primary);
+        color: var(--primary-fg);
+        font-weight: 600;
+        transform: translateY(-150%);
+        transition: transform 0.2s ease;
+      }
+      .skip-link:focus {
+        transform: translateY(0);
+      }
+    </style>
+
+    <!-- Scroll-reveal: add .in-view as elements enter the viewport. -->
+    <script>
+      const setupReveal = () => {
+        const els = document.querySelectorAll<HTMLElement>(".reveal");
+        if (!("IntersectionObserver" in window)) {
+          els.forEach((el) => el.classList.add("in-view"));
+          return;
+        }
+        const io = new IntersectionObserver(
+          (entries, obs) => {
+            for (const entry of entries) {
+              if (entry.isIntersecting) {
+                entry.target.classList.add("in-view");
+                obs.unobserve(entry.target);
+              }
+            }
+          },
+          { rootMargin: "0px 0px -8% 0px", threshold: 0.08 }
+        );
+        els.forEach((el) => io.observe(el));
+      };
+
+      setupReveal();
+      // Re-run after client-side navigations (view transitions).
+      document.addEventListener("astro:after-swap", setupReveal);
+    </script>
+  </body>
+</html>

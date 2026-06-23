@@ -1,0 +1,379 @@
+---
+import { Image } from "astro:assets";
+import disassembly from "@/assets/disassembly.png";
+import decompilation from "@/assets/decompilation.png";
+import Icon from "@/components/Icon.astro";
+
+// A single, combined list of what the GUI gives you.
+const capabilities = [
+  "Customizable decompilation to C or Rust",
+  "Linear and graph-based disassembly",
+  "Hex editor and interactive binary patching",
+  "Plugins, scripting, and more...",
+];
+
+const shots = [
+  {
+    img: disassembly,
+    alt: "angr-management showing a disassembly view alongside a hex view and recovered strings",
+    caption: "Disassembly, hex & strings",
+  },
+  {
+    img: decompilation,
+    alt: "angr-management showing decompiled C pseudocode beside a control-flow graph with selectable optimization passes",
+    caption: "Decompiler & control-flow graph",
+  },
+];
+---
+
+<section id="management" class="section">
+  <div class="container-page split">
+    <!-- Left: title + description + capabilities -->
+    <div class="copy reveal">
+      <p class="kicker">// angr-management</p>
+      <h2>A full GUI, powered by angr</h2>
+      <p class="sub">
+          Prefer to point and click? <strong>angr-management</strong> is the
+          official graphical interface — the whole platform, made visual and
+          interactive. Disassemble, decompile to C or Rust, patch, and explore,
+          all without leaving the window. It runs natively on Linux, macOS,
+          and Windows.
+        </p>
+
+        <ul class="caps" role="list">
+          {
+            capabilities.map((c) => (
+              <li>
+                <Icon name="check" size={16} />
+                {c}
+              </li>
+            ))
+          }
+        </ul>
+
+        <a
+          href="https://github.com/angr/angr-management"
+          target="_blank"
+          rel="noopener"
+          class="btn btn-primary"
+        >
+          <Icon name="download" size={18} /> Get angr-management
+        </a>
+      </div>
+
+      <!-- Right: screenshot carousel -->
+    <div
+      class="carousel card ticked reveal"
+      data-carousel
+      role="group"
+      aria-roledescription="carousel"
+      aria-label="angr-management screenshots"
+    >
+      <div class="frame-bar">
+        <span class="dot" />
+        <span class="dot" />
+        <span class="dot" />
+        <span class="bar-title">fauxware — angr management</span>
+      </div>
+
+      <div class="viewport">
+        <div class="track" data-track>
+          {
+            shots.map((shot, i) => (
+              <figure
+                class="slide"
+                data-caption={shot.caption}
+                role="group"
+                aria-roledescription="slide"
+                aria-label={`${i + 1} of ${shots.length}`}
+              >
+                <Image
+                  src={shot.img}
+                  alt={shot.alt}
+                  widths={[560, 720, 1080, 1440]}
+                  sizes="(min-width: 900px) 40rem, 100vw"
+                  loading={i === 0 ? "eager" : "lazy"}
+                  class="shot"
+                />
+              </figure>
+            ))
+          }
+        </div>
+
+        <button class="nav prev" data-prev aria-label="Previous screenshot">
+          <Icon name="arrow-right" size={20} />
+        </button>
+        <button class="nav next" data-next aria-label="Next screenshot">
+          <Icon name="arrow-right" size={20} />
+        </button>
+      </div>
+
+      <div class="control-bar">
+        <figcaption data-caption-out aria-live="polite">{shots[0].caption}</figcaption>
+        <div class="dots" role="tablist" aria-label="Choose screenshot">
+          {
+            shots.map((shot, i) => (
+              <button
+                class="dot-ind"
+                data-dot
+                role="tab"
+                aria-label={shot.caption}
+                aria-selected={i === 0 ? "true" : "false"}
+              />
+            ))
+          }
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .section {
+    padding-block: clamp(3.5rem, 7vw, 6rem);
+  }
+
+  /* Title + description on the left, carousel on the right — same split
+     pattern as the Install ("Up and running in seconds") section. */
+  .split {
+    display: grid;
+    gap: clamp(2rem, 5vw, 3.5rem);
+    align-items: center;
+  }
+  @media (min-width: 900px) {
+    .split {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+
+  .copy h2 {
+    font-size: clamp(1.9rem, 4vw, 2.85rem);
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    margin: 0.75rem 0 0.9rem;
+  }
+  .copy .sub {
+    font-size: 1.08rem;
+    line-height: 1.6;
+    color: var(--fg-muted);
+  }
+  .copy .sub strong {
+    color: var(--fg);
+  }
+
+  /* Capability checklist. */
+  .caps {
+    display: grid;
+    gap: 0.7rem;
+    margin: 1.5rem 0 2rem;
+  }
+  @media (min-width: 480px) and (max-width: 899px) {
+    .caps {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+  .caps li {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    font-size: 0.95rem;
+    font-weight: 500;
+  }
+  .caps :global(svg) {
+    color: var(--primary);
+    flex-shrink: 0;
+  }
+
+  /* Screenshot carousel, styled as an app window. */
+  .carousel {
+    overflow: hidden;
+    padding: 0;
+  }
+  .frame-bar {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.65rem 0.9rem;
+    background: var(--surface-2);
+    border-bottom: 1px solid var(--line);
+  }
+  .frame-bar .dot {
+    width: 0.66rem;
+    height: 0.66rem;
+    border-radius: 50%;
+    background: var(--line-strong);
+  }
+  .bar-title {
+    margin-left: auto;
+    font-family: var(--font-mono);
+    font-size: 0.74rem;
+    color: var(--fg-faint);
+  }
+
+  .viewport {
+    position: relative;
+    overflow: hidden;
+  }
+  .track {
+    display: flex;
+    transition: transform 0.55s var(--ease-out-expo);
+  }
+  .slide {
+    margin: 0;
+    min-width: 100%;
+  }
+  .shot {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+
+  /* Prev / next overlay buttons. */
+  .nav {
+    position: absolute;
+    top: 50%;
+    translate: 0 -50%;
+    display: inline-grid;
+    place-items: center;
+    width: 2.4rem;
+    height: 2.4rem;
+    border-radius: 50%;
+    border: 1px solid var(--line-strong);
+    background: color-mix(in srgb, var(--surface) 85%, transparent);
+    backdrop-filter: blur(6px);
+    color: var(--fg);
+    cursor: pointer;
+    opacity: 0;
+    transition:
+      opacity 0.2s ease,
+      background-color 0.2s ease,
+      border-color 0.2s ease;
+  }
+  .carousel:hover .nav,
+  .nav:focus-visible {
+    opacity: 1;
+  }
+  .nav:hover {
+    border-color: var(--primary);
+    color: var(--primary);
+  }
+  .nav.prev {
+    left: 0.75rem;
+    rotate: 180deg;
+  }
+  .nav.next {
+    right: 0.75rem;
+  }
+  @media (hover: none) {
+    .nav {
+      opacity: 1;
+    }
+  }
+
+  .control-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 0.75rem 1rem;
+    border-top: 1px solid var(--line);
+    background: var(--surface);
+  }
+  .control-bar figcaption {
+    font-family: var(--font-mono);
+    font-size: 0.78rem;
+    color: var(--fg-faint);
+  }
+  .dots {
+    display: flex;
+    gap: 0.5rem;
+  }
+  .dot-ind {
+    width: 0.55rem;
+    height: 0.55rem;
+    padding: 0;
+    border: none;
+    border-radius: 50%;
+    background: var(--line-strong);
+    cursor: pointer;
+    transition:
+      background-color 0.2s ease,
+      width 0.2s ease;
+  }
+  .dot-ind[aria-selected="true"] {
+    width: 1.4rem;
+    border-radius: 0.3rem;
+    background: var(--primary);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .track {
+      transition: none;
+    }
+  }
+</style>
+
+<script>
+  const setup = () => {
+    document
+      .querySelectorAll<HTMLElement>("[data-carousel]")
+      .forEach((root) => {
+        const track = root.querySelector<HTMLElement>("[data-track]");
+        const slides = Array.from(root.querySelectorAll<HTMLElement>(".slide"));
+        const dots = Array.from(root.querySelectorAll<HTMLButtonElement>("[data-dot]"));
+        const caption = root.querySelector<HTMLElement>("[data-caption-out]");
+        if (!track || slides.length < 2) return;
+
+        let index = 0;
+        let timer: ReturnType<typeof setInterval> | undefined;
+        const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+        const render = () => {
+          track.style.transform = `translateX(-${index * 100}%)`;
+          dots.forEach((d, i) =>
+            d.setAttribute("aria-selected", String(i === index))
+          );
+          const cap = slides[index].dataset.caption;
+          if (caption && cap) caption.textContent = cap;
+        };
+        const go = (i: number) => {
+          index = (i + slides.length) % slides.length;
+          render();
+        };
+
+        const stop = () => timer && clearInterval(timer);
+        const start = () => {
+          if (reduce) return;
+          stop();
+          timer = setInterval(() => go(index + 1), 5500);
+        };
+
+        root.querySelector("[data-next]")?.addEventListener("click", () => {
+          go(index + 1);
+          start();
+        });
+        root.querySelector("[data-prev]")?.addEventListener("click", () => {
+          go(index - 1);
+          start();
+        });
+        dots.forEach((dot, i) =>
+          dot.addEventListener("click", () => {
+            go(i);
+            start();
+          })
+        );
+
+        // Pause auto-advance while the user is interacting.
+        root.addEventListener("pointerenter", stop);
+        root.addEventListener("pointerleave", start);
+        root.addEventListener("focusin", stop);
+        root.addEventListener("focusout", start);
+
+        render();
+        start();
+      });
+  };
+
+  setup();
+  document.addEventListener("astro:after-swap", setup);
+</script>

@@ -1,0 +1,56 @@
+---
+import Icon from "@/components/Icon.astro";
+---
+
+<section id="community" class="section">
+  <div class="container-page">
+    <div class="band reveal">
+      <p class="kicker">// join in</p>
+      <h2>Built in the open, with a community to match</h2>
+      <p class="sub">
+        angr is developed by researchers and hackers around the world. Ask
+        questions, share what you've built, or send your first pull request —
+        everyone's welcome.
+      </p>
+      <div class="cta">
+        <a href="https://discord.angr.io" target="_blank" rel="noopener" class="btn btn-ghost">
+          <Icon name="discord" size={18} /> Chat on Discord
+        </a>
+        <a href="https://github.com/angr" target="_blank" rel="noopener" class="btn btn-ghost">
+          <Icon name="github" size={18} /> Contribute on GitHub
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .section {
+    padding-block: clamp(3rem, 6vw, 5rem);
+  }
+  .band {
+    position: relative;
+    padding-block: clamp(0.5rem, 2vw, 1.5rem);
+  }
+  h2 {
+    font-size: clamp(1.9rem, 4vw, 2.85rem);
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    line-height: 1.1;
+    margin: 0.75rem 0 0.9rem;
+    max-width: 24ch;
+  }
+  .sub {
+    font-size: 1.08rem;
+    line-height: 1.6;
+    color: var(--fg-muted);
+    max-width: 46ch;
+    margin: 0;
+  }
+  .cta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.85rem;
+    margin-top: 2rem;
+  }
+</style>

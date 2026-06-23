@@ -1,0 +1,384 @@
+---
+import { Code } from "astro:components";
+import Icon from "@/components/Icon.astro";
+import notebooks from "@/assets/hero/notebooks.json";
+---
+
+<section class="hero">
+  <div class="hero-glow" aria-hidden="true"></div>
+  <div class="container-page grid">
+    <div class="copy">
+      <p class="kicker reveal">// open-source binary analysis</p>
+      <h1 class="reveal" style="--reveal-delay: 60ms">
+        <span class="text-gradient">Demystify binaries.</span>
+      </h1>
+      <p class="lede reveal" style="--reveal-delay: 120ms">
+        <strong>angr</strong> is a powerful, Python-native platform for analyzing
+        binaries — combining decompilation, symbolic execution, and more into one
+        scriptable toolkit.
+      </p>
+
+      <div class="cta reveal" style="--reveal-delay: 180ms">
+        <a href="#install" class="btn btn-primary">
+          <Icon name="download" size={18} /> Install angr
+        </a>
+        <a
+          href="https://github.com/angr/angr"
+          target="_blank"
+          rel="noopener"
+          class="btn btn-ghost"
+        >
+          <Icon name="github" size={18} /> View on GitHub
+        </a>
+      </div>
+
+      <dl class="stats reveal" style="--reveal-delay: 240ms">
+        <div><dt>BSD</dt><dd>licensed</dd></div>
+        <div><dt>8+</dt><dd>architectures</dd></div>
+        <div><dt>1</dt><dd>pip install away</dd></div>
+      </dl>
+    </div>
+
+    <div class="terminal-wrap reveal" style="--reveal-delay: 160ms">
+      <div class="nb card ticked" data-nb-carousel>
+        <div class="term-bar">
+          <span class="dot"></span><span class="dot"></span><span class="dot"></span>
+          <span class="term-title">fauxware — ipython</span>
+        </div>
+
+        <div class="nb-stage-wrap">
+          <div class="nb-stage">
+            {
+              notebooks.map((nb: any, i: number) => (
+                <div class="nb-panel" id={`nb-${nb.id}`} data-panel hidden={i !== 0}>
+                  {nb.cells.map((cell: any) => (
+                    <div class="cell">
+                      <div class="line">
+                        <span class="prompt in">In [{cell.n}]:</span>
+                        <div class="content">
+                          <Code
+                            code={cell.code}
+                            lang="python"
+                            themes={{ light: "github-light", dark: "one-dark-pro" }}
+                          />
+                        </div>
+                      </div>
+                      {cell.streamHtml && (
+                        <div class="line">
+                          <span class="prompt" />
+                          <pre class="content stream" set:html={cell.streamHtml} />
+                        </div>
+                      )}
+                      {cell.out && (
+                        <div class="line">
+                          <span class="prompt out">Out[{cell.n}]:</span>
+                          <pre class="content plain out-val">{cell.out}</pre>
+                        </div>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              ))
+            }
+          </div>
+          <div class="nb-fade" aria-hidden="true"></div>
+        </div>
+
+        <div class="nb-tabs" role="tablist" aria-label="angr capabilities">
+          {
+            notebooks.map((nb: any, i: number) => (
+              <button
+                class="nb-tab"
+                data-tab
+                data-target={nb.id}
+                role="tab"
+                aria-controls={`nb-${nb.id}`}
+                aria-selected={i === 0 ? "true" : "false"}
+                tabindex={i === 0 ? "0" : "-1"}
+              >
+                {nb.title}
+              </button>
+            ))
+          }
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .hero {
+    position: relative;
+    overflow: hidden;
+    padding-block: clamp(3.5rem, 8vw, 7rem) clamp(3rem, 6vw, 5rem);
+  }
+  .hero-glow {
+    position: absolute;
+    inset: -30% -10% auto -10%;
+    height: 60rem;
+    background:
+      radial-gradient(40rem 28rem at 78% 8%, var(--glow), transparent 70%),
+      radial-gradient(30rem 24rem at 10% 0%, color-mix(in srgb, var(--amber) 14%, transparent), transparent 70%);
+    pointer-events: none;
+    z-index: 0;
+  }
+  .grid {
+    position: relative;
+    z-index: 1;
+    display: grid;
+    gap: clamp(2.5rem, 5vw, 4rem);
+    align-items: center;
+  }
+  @media (min-width: 980px) {
+    .grid {
+      grid-template-columns: 0.92fr 1.08fr;
+    }
+  }
+
+  h1 {
+    font-size: clamp(2.6rem, 6.5vw, 4.6rem);
+    line-height: 1.02;
+    letter-spacing: -0.035em;
+    font-weight: 800;
+    margin-block: 1rem 1.25rem;
+  }
+  .lede {
+    font-size: clamp(1.05rem, 2vw, 1.22rem);
+    line-height: 1.6;
+    color: var(--fg-muted);
+    max-width: 36rem;
+  }
+  .lede strong {
+    color: var(--fg);
+    font-weight: 700;
+  }
+
+  .cta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.85rem;
+    margin-top: 2rem;
+  }
+
+  .stats {
+    display: flex;
+    gap: 2.5rem;
+    margin-top: 2.5rem;
+    padding-top: 1.75rem;
+    border-top: 1px solid var(--line);
+  }
+  .stats dt {
+    font-family: var(--font-mono);
+    font-size: 1.6rem;
+    font-weight: 700;
+    color: var(--primary);
+    line-height: 1;
+  }
+  .stats dd {
+    margin: 0.35rem 0 0;
+    font-size: 0.82rem;
+    color: var(--fg-faint);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+  }
+
+  /* ---- Notebook carousel ---- */
+  .nb {
+    overflow: hidden;
+  }
+  .term-bar {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.7rem 1rem;
+    background: var(--surface-2);
+    border-bottom: 1px solid var(--line);
+  }
+  .dot {
+    width: 0.72rem;
+    height: 0.72rem;
+    border-radius: 50%;
+    background: var(--line-strong);
+  }
+  .dot:nth-child(1) {
+    background: #ff5f57;
+  }
+  .dot:nth-child(2) {
+    background: #febc2e;
+  }
+  .dot:nth-child(3) {
+    background: #28c840;
+  }
+  .term-title {
+    margin-left: auto;
+    font-family: var(--font-mono);
+    font-size: 0.76rem;
+    color: var(--fg-faint);
+  }
+
+  .nb-stage-wrap {
+    position: relative;
+  }
+  .nb-stage {
+    height: 26rem;
+    overflow-y: auto;
+    padding: 1rem 1.1rem;
+    scrollbar-width: thin;
+  }
+  .nb-fade {
+    position: absolute;
+    inset: auto 0 0 0;
+    height: 2.5rem;
+    background: linear-gradient(transparent, var(--surface));
+    pointer-events: none;
+  }
+
+  .nb-panel[hidden] {
+    display: none;
+  }
+  .cell {
+    font-family: var(--font-mono);
+    font-size: clamp(0.68rem, 1.4vw, 0.78rem);
+    line-height: 1.5;
+  }
+  .cell + .cell {
+    margin-top: 0.85rem;
+  }
+  .line {
+    display: grid;
+    grid-template-columns: 3.7rem 1fr;
+    column-gap: 0.55rem;
+  }
+  .line + .line {
+    margin-top: 0.2rem;
+  }
+  .prompt {
+    text-align: right;
+    white-space: nowrap;
+    user-select: none;
+  }
+  /* IPython prompt colors: In green, Out red. */
+  .prompt.in {
+    color: #3fb950;
+  }
+  .prompt.out {
+    color: var(--primary);
+  }
+  .content {
+    min-width: 0;
+  }
+  .content :global(pre.astro-code) {
+    margin: 0;
+    padding: 0;
+    background: transparent !important;
+    font-size: inherit;
+    line-height: inherit;
+    overflow-x: auto;
+  }
+  .stream,
+  .plain {
+    margin: 0;
+    font: inherit;
+    white-space: pre;
+    overflow-x: auto;
+    color: var(--fg);
+  }
+  .out-val {
+    color: var(--fg);
+  }
+
+  .nb-tabs {
+    display: flex;
+    gap: 0.25rem;
+    padding: 0.4rem 0.5rem;
+    border-top: 1px solid var(--line);
+    background: var(--surface-2);
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+  .nb-tabs::-webkit-scrollbar {
+    display: none;
+  }
+  .nb-tab {
+    flex: 0 0 auto;
+    padding: 0.5rem 0.85rem;
+    border: none;
+    background: transparent;
+    border-radius: 0.5rem;
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+    font-weight: 500;
+    color: var(--fg-muted);
+    cursor: pointer;
+    white-space: nowrap;
+    transition:
+      color 0.18s ease,
+      background-color 0.18s ease;
+  }
+  .nb-tab:hover {
+    color: var(--fg);
+  }
+  .nb-tab[aria-selected="true"] {
+    color: var(--primary);
+    background: color-mix(in srgb, var(--primary) 12%, transparent);
+  }
+</style>
+
+<script>
+  const setup = () => {
+    const root = document.querySelector<HTMLElement>("[data-nb-carousel]");
+    if (!root) return;
+    const tabs = Array.from(root.querySelectorAll<HTMLButtonElement>("[data-tab]"));
+    const panels = Array.from(root.querySelectorAll<HTMLElement>("[data-panel]"));
+    const stage = root.querySelector<HTMLElement>(".nb-stage");
+    if (tabs.length < 2) return;
+
+    let index = 0;
+    let timer: ReturnType<typeof setInterval> | undefined;
+    let interacted = false; // once the user picks a tab, stop auto-advancing
+    const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+    const show = (n: number) => {
+      index = (n + tabs.length) % tabs.length;
+      tabs.forEach((t, k) => {
+        t.setAttribute("aria-selected", String(k === index));
+        t.tabIndex = k === index ? 0 : -1;
+      });
+      panels.forEach((p, k) => p.toggleAttribute("hidden", k !== index));
+      if (stage) stage.scrollTop = 0; // reset scroll when switching demos
+    };
+    const stop = () => timer && clearInterval(timer);
+    const start = () => {
+      if (reduce || interacted) return;
+      stop();
+      timer = setInterval(() => show(index + 1), 8000);
+    };
+
+    tabs.forEach((tab, k) => {
+      tab.addEventListener("click", () => {
+        interacted = true; // user took over — stop auto-advancing for good
+        stop();
+        show(k);
+      });
+      tab.addEventListener("keydown", (e) => {
+        if (e.key !== "ArrowRight" && e.key !== "ArrowLeft") return;
+        e.preventDefault();
+        interacted = true;
+        stop();
+        show(index + (e.key === "ArrowRight" ? 1 : -1));
+        tabs[index].focus();
+      });
+    });
+
+    root.addEventListener("pointerenter", stop);
+    root.addEventListener("pointerleave", start);
+    root.addEventListener("focusin", stop);
+    root.addEventListener("focusout", start);
+
+    show(0);
+    start();
+  };
+
+  setup();
+  document.addEventListener("astro:after-swap", setup);
+</script>

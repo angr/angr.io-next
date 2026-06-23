@@ -1,0 +1,161 @@
+---
+import Icon from "@/components/Icon.astro";
+---
+
+<section id="install" class="section">
+  <div class="container-page inner reveal">
+    <div class="copy">
+      <p class="kicker">// get started</p>
+      <h2>Up and running in seconds</h2>
+      <p class="sub">
+        angr is a Python 3.12+ package. Install it into a virtual environment and
+        you're ready to analyze. Works on Linux, macOS, and Windows.
+      </p>
+      <div class="links">
+        <a href="https://docs.angr.io/getting-started/installing" target="_blank" rel="noopener" class="btn btn-ghost">
+          <Icon name="book" size={18} /> Install guide
+        </a>
+        <a href="https://docs.angr.io" target="_blank" rel="noopener" class="btn btn-ghost">
+          <Icon name="arrow-up-right" size={18} /> Documentation
+        </a>
+      </div>
+    </div>
+
+    <div class="cmd card">
+      <div class="cmd-row">
+        <code id="install-cmd"><span class="pr">$</span> pip install angr</code>
+        <button id="copy-cmd" class="copy-btn" aria-label="Copy install command">
+          <span class="copy-icon"><Icon name="copy" size={17} /></span>
+          <span class="check-icon"><Icon name="check" size={17} /></span>
+        </button>
+      </div>
+      <p class="hint"># then <span class="mono">import angr</span> and go</p>
+    </div>
+  </div>
+</section>
+
+<style>
+  .section {
+    padding-block: clamp(3.5rem, 7vw, 6rem);
+  }
+  .inner {
+    display: grid;
+    gap: 2.5rem;
+    align-items: center;
+  }
+  @media (min-width: 880px) {
+    .inner {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+  h2 {
+    font-size: clamp(1.9rem, 4vw, 2.6rem);
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    margin: 0.75rem 0 0.9rem;
+  }
+  .sub {
+    font-size: 1.05rem;
+    line-height: 1.6;
+    color: var(--fg-muted);
+    max-width: 32rem;
+  }
+  .links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    margin-top: 1.75rem;
+  }
+
+  .cmd {
+    padding: 1.5rem 1.5rem 1.25rem;
+  }
+  .cmd-row {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    background: var(--bg);
+    border: 1px solid var(--line);
+    border-radius: 0.7rem;
+    padding: 1rem 1.1rem;
+  }
+  .cmd-row code {
+    font-family: var(--font-mono);
+    font-size: clamp(0.9rem, 2vw, 1.05rem);
+    font-weight: 500;
+    flex: 1;
+    overflow-x: auto;
+    white-space: nowrap;
+  }
+  .cmd-row .pr {
+    color: var(--primary);
+    user-select: none;
+    margin-right: 0.6rem;
+  }
+  .copy-btn {
+    display: inline-grid;
+    place-items: center;
+    width: 2.2rem;
+    height: 2.2rem;
+    border-radius: 0.5rem;
+    border: 1px solid var(--line);
+    background: var(--surface);
+    color: var(--fg-muted);
+    cursor: pointer;
+    flex-shrink: 0;
+    transition:
+      color 0.18s ease,
+      border-color 0.18s ease;
+  }
+  .copy-btn:hover {
+    color: var(--primary);
+    border-color: var(--primary);
+  }
+  .copy-btn span {
+    grid-area: 1 / 1;
+    display: inline-grid;
+    place-items: center;
+    transition:
+      opacity 0.2s ease,
+      transform 0.2s ease;
+  }
+  .check-icon {
+    opacity: 0;
+    transform: scale(0.5);
+    color: #28c840;
+  }
+  .copy-btn.copied .copy-icon {
+    opacity: 0;
+    transform: scale(0.5);
+  }
+  .copy-btn.copied .check-icon {
+    opacity: 1;
+    transform: scale(1);
+  }
+  .hint {
+    margin: 0.9rem 0 0;
+    font-family: var(--font-mono);
+    font-size: 0.82rem;
+    color: var(--fg-faint);
+  }
+  .hint .mono {
+    color: var(--accent);
+  }
+</style>
+
+<script>
+  const bind = () => {
+    const btn = document.getElementById("copy-cmd");
+    btn?.addEventListener("click", async () => {
+      try {
+        await navigator.clipboard.writeText("pip install angr");
+        btn.classList.add("copied");
+        setTimeout(() => btn.classList.remove("copied"), 1600);
+      } catch {
+        /* clipboard unavailable */
+      }
+    });
+  };
+  bind();
+  document.addEventListener("astro:after-swap", bind);
+</script>
