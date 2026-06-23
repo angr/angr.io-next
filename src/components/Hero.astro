@@ -126,12 +126,16 @@ import notebooks from "@/assets/hero/notebooks.json";
     position: relative;
     z-index: 1;
     display: grid;
+    /* Single column constrained to the viewport (not content-sized), so the
+       notebook's long code lines scroll inside the panel instead of widening
+       the whole hero off-screen on mobile. */
+    grid-template-columns: minmax(0, 1fr);
     gap: clamp(2.5rem, 5vw, 4rem);
     align-items: center;
   }
   @media (min-width: 980px) {
     .grid {
-      grid-template-columns: 0.92fr 1.08fr;
+      grid-template-columns: minmax(0, 0.92fr) minmax(0, 1.08fr);
     }
   }
 
@@ -162,7 +166,7 @@ import notebooks from "@/assets/hero/notebooks.json";
 
   .stats {
     display: flex;
-    gap: 2.5rem;
+    gap: clamp(1rem, 5vw, 2.5rem);
     margin-top: 2.5rem;
     padding-top: 1.75rem;
     border-top: 1px solid var(--line);
