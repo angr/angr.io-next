@@ -255,8 +255,10 @@ const transcript = (raws[manifest[0].id] || "")
     const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
     let player: { dispose?: () => void } | null = null;
     let started = false;
+    let currentSrc: string | null = null;
 
     const load = (src: string) => {
+      currentSrc = src;
       if (player?.dispose) player.dispose();
       el.innerHTML = "";
       // The aspect-ratio box (CSS) keeps the card from reflowing; this hides the
@@ -330,6 +332,22 @@ const transcript = (raws[manifest[0].id] || "")
     } else {
       start();
     }
+
+    // asciinema bakes the palette into each drawn cell at render time, so a
+    // theme toggle leaves already-painted cells in the old colors. Reload the
+    // current cast when [data-theme] flips so the player re-reads the vars.
+    // documentElement survives Astro view-transition swaps, so drop any
+    // observer from a previous page before wiring up this mount's.
+    const w = window as unknown as { __cliThemeObs?: MutationObserver };
+    w.__cliThemeObs?.disconnect();
+    const themeObserver = new MutationObserver(() => {
+      if (currentSrc) load(currentSrc);
+    });
+    themeObserver.observe(document.documentElement, {
+      attributes: true,
+      attributeFilter: ["data-theme"],
+    });
+    w.__cliThemeObs = themeObserver;
   };
 
   mount();
