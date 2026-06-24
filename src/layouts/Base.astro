@@ -71,6 +71,48 @@ const siteHome = new URL(base, Astro.site).href;
     </script>
 
     <style is:inline>
+      /* Critical styles, inlined so they apply at first paint — before the
+         external stylesheet loads (or is JS-injected, in dev). Without this the
+         page briefly paints unstyled: no background, and the skip-link slides
+         away (its external rule applies `transform` + `transition` together, so
+         the hide animates from visible → off-screen, flashing orange). These
+         theme tokens mirror :root / [data-theme] in global.css — keep in sync. */
+      :root {
+        --bg: #faf9f7;
+        --fg: #15171c;
+        --primary: #d11f17;
+        --primary-fg: #ffffff;
+      }
+      [data-theme="dark"] {
+        --bg: #0a0b0e;
+        --fg: #e7e9ee;
+        --primary: #ff4338;
+        --primary-fg: #0a0b0e;
+      }
+      html {
+        background-color: var(--bg);
+        color: var(--fg);
+      }
+
+      /* Skip link: hidden off-screen with NO transition by default, so it can
+         never animate into/out of view on load. Only the focus reveal animates. */
+      .skip-link {
+        position: fixed;
+        top: 0.75rem;
+        left: 0.75rem;
+        z-index: 100;
+        padding: 0.6rem 1rem;
+        border-radius: 0.5rem;
+        background: var(--primary);
+        color: var(--primary-fg);
+        font-weight: 600;
+        transform: translateY(-150%);
+      }
+      .skip-link:focus {
+        transform: translateY(0);
+        transition: transform 0.2s ease;
+      }
+
       /* Scroll-reveal hidden state, inlined so it applies at first paint even
          before the external CSS loads — otherwise revealed content paints
          visible, gets hidden when the CSS arrives, then animates in (a flash on
@@ -119,24 +161,8 @@ const siteHome = new URL(base, Astro.site).href;
     <a href="#main" class="skip-link">Skip to content</a>
     <slot />
 
-    <style>
-      .skip-link {
-        position: fixed;
-        top: 0.75rem;
-        left: 0.75rem;
-        z-index: 100;
-        padding: 0.6rem 1rem;
-        border-radius: 0.5rem;
-        background: var(--primary);
-        color: var(--primary-fg);
-        font-weight: 600;
-        transform: translateY(-150%);
-        transition: transform 0.2s ease;
-      }
-      .skip-link:focus {
-        transform: translateY(0);
-      }
-    </style>
+    <!-- The skip-link's styles are inlined in <head> (critical) so it never
+         flashes on load — see the <style is:inline> block above. -->
 
     <!-- Scroll-reveal: add .in-view as elements enter the viewport. -->
     <script>
