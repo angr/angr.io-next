@@ -26,7 +26,7 @@ export const features: Feature[] = [
   {
     icon: "binary",
     title: "Disassembly & Lifting",
-    body: "Disassemble and lift to the VEX intermediate language, giving every architecture one uniform analysis surface.",
+    body: "Disassemble and lift to AIL, the angr intermediate language, giving every architecture one uniform analysis surface.",
   },
   {
     icon: "cpu",
